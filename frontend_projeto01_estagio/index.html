@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Gerenciamento linhas telefônicas</title>
+
+        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+              rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    </head>
+    <body class="bg-light">
+
+        <div>
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                <div class="mx-2 container-fluid d-flex justify-content-between align-items-center">
+                    <a class="text-light text-decoration-none" href="index.html">Home</a>
+                    <h6 class="text-light mb-0">Sistema de gerenciamento de linhas telefônicas</h6>
+                    <div class="navIcons">
+                        <a href="" class="text-decoration-none">
+                            <i class="bi bi-person-circle text-light fs-4 me-3"></i>
+                        </a>
+                        <a href="" class="text-decoration-none">
+                            <i class="bi bi-box-arrow-right text-light me-2 fs-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center mt-4">
+                <div class="d-flex col-12 justify-content-between">
+                    <h4 class="mb-0">Gerenciamento de ramais</h4>
+                    <div>
+                        <button class="btn btn-primary me-4" onclick="logarRamal()">Registrar novo ramal</button>
+                        <button class="btn btn-primary" onclick="range()">Definir range de ramais</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center mt-2">
+                <div class="col-md-12">
+                    <div>
+                        <label for="search" class="form-label">Campo de busca</label>
+                        <div class="d-flex">
+                            <input type="search" class="form-control me-2" id="search" name="search" placeholder="Insira o número do ramal ou o nome do usuário logado">
+                            <input type="button" onclick="buscarUsuarios()" onkeydown="buscarUsuarios()" value="Buscar" class="btn btn-primary" id="searchBtn">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <ul class="nav nav-tabs mt-4 rounded-start" id="ramaisTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="todos-tab" data-bs-toggle="tab" data-bs-target="#todos" type="button" role="tab">Todos os ramais</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ativos-tab" data-bs-toggle="tab" data-bs-target="#ativos" type="button" role="tab">Ramais disponíveis</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="inativos-tab" data-bs-toggle="tab" data-bs-target="#inativos" type="button" role="tab">Ramais indisponíveis</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="">
+                <div class="row justify-content-center" id="ramaisTabContent">
+                    <div class="table-responsive">
+                        <div class="col-md-12" id="ativos" role="tabpanel">
+                            <table class="table table-striped table-bordered rounded-2 overflow-hidden text-center" id="tableTelephone">
+                                <thead>
+                                <tr class="table-secondary">
+                                    <th>Ramal</th>
+                                    <th>Nome do usuário</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tableBody"></tbody>
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <form id="formCadastro">
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title fw-bold" id="modalCadastroLabel">Registrar novo ramal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <label class="form-label">Nome do usuário</label>
+                                <input type="text" id="usuarioLogado" class="form-control mb-2" placeholder="Digite seu nome" name="usuarioLogado" autocomplete="off" required>
+                            </div>
+                            <div>
+                                <label class="form-label">E-mail</label>
+                                <input type="text" id="emailUsuarioLogado" class="form-control mb-2" placeholder="Digite seu e-mail" name="emailUsuarioLogado" autocomplete="off" required>
+                                <p id="texto-erro" class="small text-danger mt-2"></p>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label">Ramal</label>
+                                    <input type="text" id="option" class="form-control me-3" disabled>
+                                </div>
+
+                                <div class="col-6">
+                                    <label class="form-label">Status</label>
+                                    <select id="status" class="form-control" name="status">
+                                        <option  value="ativo">Ativo</option>
+                                        <option value="inativo">Inativo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" onclick="addRamais(event)">Cadastrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modalRange" tabindex="-1" aria-labelledby="modalRangeLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <form id="formRange">
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title fw-bold" id="modalRangeLabel">Definir range de ramais</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Insira um intervalo de 1001 à 1200</p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" id="rangeInicio" class="form-control mb-2" name="rangeInicio" autocomplete="off" required>
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="rangeFim" class="form-control mb-2" name="rangeFim" autocomplete="off" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" onclick="listarRamaisPorRange()">Definir</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title" id="successModalLabel">Sucesso!</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Ramal registrado com sucesso!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="btn-fechar-modal" data-bs-dismiss="modal"
+                        onclick="recarregarPagina()">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="myModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deslogar ramal</h4>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja deslogar o usuário do ramal?                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button onclick="deslogarRamal(ramalSelecionado)" type="button" class="btn btn-danger" id="btnDeletar"
+                                data-bs-dismiss="modal">Deslogar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="script.js"></script>
+    </body>
+</html>
