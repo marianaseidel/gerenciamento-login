@@ -45,5 +45,9 @@ public class RamalService {
         return ramalRepository.findAll();
     }
 
+    public Optional<Ramal> buscarRamalAtivoPorEmail(String email) {
+        return ramalRepository.findByEmailAndStatus(email, "ativo");
+    }
+
 }
 

@@ -19,10 +19,10 @@ public class Ramal {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id") // Nome da coluna de chave estrangeira no banco
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @Column(unique = true, nullable = false, name = "email")
+    @Column(unique = true, nullable = true, name = "email")
     private String email;
 
     public Long getId() {

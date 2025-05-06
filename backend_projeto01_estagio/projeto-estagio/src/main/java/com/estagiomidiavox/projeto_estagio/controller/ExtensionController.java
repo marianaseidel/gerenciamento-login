@@ -72,25 +72,31 @@ public class ExtensionController {
         String email = dados.get("email");
 
         Optional<Ramal> optionalRamal = ramalService.buscarPorNumero(extension);
-        if (optionalRamal.isPresent()) {
-            Ramal ramal = optionalRamal.get();
-            if (ramal.getStatus().equalsIgnoreCase("inativo")) {
-                ramal.setUsuarioLogado(usuario);
-                ramal.setEmail(email);
-                ramal.setStatus("ativo");
-                ramalService.salvar(ramal);
-                return ResponseEntity.ok("Ramal logado com sucesso.");
-            } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Ramal já está em uso.");
-            }
-        } else {
+        if (optionalRamal.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ramal não encontrado.");
         }
+
+        Optional<Ramal> ramalComMesmoEmail = ramalService.buscarRamalAtivoPorEmail(email);
+        if (ramalComMesmoEmail.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este e-mail já está logado em outro ramal.");
+        }
+
+        Ramal ramal = optionalRamal.get();
+        if (ramal.getStatus().equalsIgnoreCase("ativo")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ramal já está em uso.");
+        }
+
+        ramal.setUsuarioLogado(usuario);
+        ramal.setEmail(email);
+        ramal.setStatus("ativo");
+        ramalService.salvar(ramal);
+        return ResponseEntity.ok("Ramal logado com sucesso.");
     }
 
     @DeleteMapping("/logout/{extension}")
     public ResponseEntity<?> deslogarRamal(@PathVariable String extension) {
         Optional<Ramal> optionalRamal = ramalService.buscarPorNumero(extension);
+
         if (optionalRamal.isPresent()) {
             Ramal ramal = optionalRamal.get();
             ramal.setUsuarioLogado(null);
