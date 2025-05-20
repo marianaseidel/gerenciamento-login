@@ -41,6 +41,20 @@ public class RamalService {
         return ramalRepository.findByUsuarioLogadoIsNotNullAndStatus("ativo");
     }
 
+    public List<Ramal> listarRamaisDisponiveisComIntervalo(int inicio, int fim) {
+        return ramalRepository.findAll().stream()
+                .filter(ramal -> {
+                    try {
+                        int numero = Integer.parseInt(ramal.getNumero());
+                        return numero >= inicio && numero <= fim;
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+                })
+                .filter(ramal -> "inativo".equalsIgnoreCase(ramal.getStatus()))
+                .toList();
+    }
+
     public List<Ramal> listarTodosRamais() {
         return ramalRepository.findAll();
     }

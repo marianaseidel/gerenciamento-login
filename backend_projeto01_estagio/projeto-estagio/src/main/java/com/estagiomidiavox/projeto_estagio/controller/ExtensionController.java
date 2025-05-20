@@ -55,8 +55,13 @@ public class ExtensionController {
 
     @GetMapping("/available-all")
     public ResponseEntity<?> listarRamaisDisponiveis() {
-        List<Ramal> ramaisDisponiveis = ramalService.listarRamaisDisponiveis();
-        return ResponseEntity.ok(ramaisDisponiveis);
+        if (intervaloConfigurado && intervaloInicio != null && intervaloFim != null) {
+            List<Ramal> ramaisFiltrados = ramalService.listarRamaisDisponiveisComIntervalo(intervaloInicio, intervaloFim);
+            return ResponseEntity.ok(ramaisFiltrados);
+        } else {
+            List<Ramal> todosDisponiveis = ramalService.listarRamaisDisponiveis();
+            return ResponseEntity.ok(todosDisponiveis);
+        }
     }
 
     @GetMapping("/unavailable-all")
