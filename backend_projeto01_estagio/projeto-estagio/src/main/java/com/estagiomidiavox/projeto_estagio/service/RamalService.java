@@ -49,5 +49,9 @@ public class RamalService {
         return ramalRepository.findByEmailAndStatus(email, "ativo");
     }
 
+    public List<Ramal> buscarPorTermo(String termo) {
+        return ramalRepository.findByUsuarioLogadoContainingIgnoreCaseOrNumeroContaining(termo, termo);
+    }
+
 }
 

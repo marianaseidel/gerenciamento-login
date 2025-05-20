@@ -116,6 +116,13 @@ public class ExtensionController {
         this.intervaloConfigurado = true;
         Map<String, String> response = new HashMap<>();
         response.put("message", "Intervalo configurado com sucesso.");
-        return ResponseEntity.ok(response);    }
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Ramal>> buscarRamais(@RequestParam String termo) {
+        List<Ramal> resultados = ramalService.buscarPorTermo(termo);
+        return ResponseEntity.ok(resultados);
+    }
 }
 

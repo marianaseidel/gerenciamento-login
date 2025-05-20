@@ -14,4 +14,6 @@ public interface RamalRepository extends JpaRepository<Ramal, Long> {
     boolean existsByEmail(String email);
 
     Optional<Ramal> findByEmailAndStatus(String email, String status);
+    List<Ramal> findByUsuarioLogadoContainingIgnoreCaseOrNumeroContaining(String nome, String numero);
+
 }

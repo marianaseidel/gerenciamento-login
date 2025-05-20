@@ -248,44 +248,42 @@ function buscarUsuarios() {
         listarTodosRamais();
         return;
     }
-    fetch(`${url}/all`)
-    .then(response => response.json())
-    .then((dados) => {
-        const resultados = dados.filter(ramal => {
-        const nome = ramal.usuarioLogado ? ramal.usuarioLogado.toLowerCase() : "";
-        const numero = ramal.numero ? ramal.numero.toString() : "";
-        return termoBusca === nome || termoBusca === numero;
-    });
+        fetch(`${url}/buscar?termo=${encodeURIComponent(termoBusca)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar ramais no backend');
+                }
+                return response.json();
+            })
+            .then((resultados) => {
+                if (resultados.length === 0) {
+                    const linha = document.createElement("tr");
+                    linha.innerHTML = `<td colspan="4">Nenhum resultado encontrado.</td>`;
+                    corpoTabela.appendChild(linha);
+                    return;
+                }
 
-    if (resultados.length === 0) {
-        const linha = document.createElement("tr");
-        linha.innerHTML = `<td colspan="4">Nenhum resultado encontrado.</td>`;
-        corpoTabela.appendChild(linha);
-        return;
-    }
-
-    resultados.forEach((ramal) => {
-        const linha = document.createElement("tr");
-        linha.innerHTML = `
-            <td>${ramal.numero}</td>
-            <td>${ramal.usuarioLogado || "-"}</td>
-            <td>${ramal.status.toLowerCase() === "ativo" ? "Indisponível" : "Disponível"}</td>
-            <td>${ramal.status.toLowerCase() === "ativo" ?
-                `<button onclick="deslogar()" title="Deslogar do ramal" class="btn btn-link p-0 m-0 text-danger">
-                    <i class="bi bi-telephone-x"></i>
-                </button>` :
-                `<button onclick="logar()" title="Logar do ramal" class="btn btn-link p-0 m-0 text-success">
-                    <i class="bi bi-telephone"></i>
-                </button>`
-            }</td>
-        `;
-        corpoTabela.appendChild(linha);
-        });
-    })
-    .catch(error => {
-        console.error('Erro ao realizar a busca:', error);
-        alert('Erro ao realizar a busca!');
-    });
+                resultados.forEach((ramal) => {
+                    const linha = document.createElement("tr");
+                    linha.innerHTML = `
+                        <td>${ramal.numero}</td>
+                        <td>${ramal.usuarioLogado || "-"}</td>
+                        <td>${ramal.status.toLowerCase() === "ativo" ? "Indisponível" : "Disponível"}</td>
+                        <td>${ramal.status.toLowerCase() === "ativo" ?
+                            `<button onclick="deslogar()" title="Deslogar do ramal" class="btn btn-link p-0 m-0 text-danger">
+                                <i class="bi bi-telephone-x"></i>
+                            </button>` :
+                            `<button onclick="logar()" title="Logar do ramal" class="btn btn-link p-0 m-0 text-success">
+                                <i class="bi bi-telephone"></i>
+                            </button>`
+                        }</td>
+                    `;
+                    corpoTabela.appendChild(linha);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao realizar a busca:', error);
+            });
 }
 
 function logarRamal(ramal) {
